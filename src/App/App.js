@@ -80,7 +80,8 @@ function App() {
 
   return (
     <div className="App">
-      <nav className="App-header">{showLoginOptions(user)}
+      <nav className="App-header">
+        {showLoginOptions(user)}
       </nav>
       
       <button onClick={Google.getDocument}>get documents</button>
