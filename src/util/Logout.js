@@ -14,8 +14,7 @@ export function Logout () {
 
     return (
         <ul id="logout">
-            <li><img id="user-profile-image" src={user.imageUrl}/></li>
-            <li>{user.name}</li>
+            <li><img id="user-profile-image" src={user.imageUrl} alt="user profile pic"/></li>
             <li><GoogleLogout
                 clientId={CLIENT_ID}
                 buttonText="Logout"

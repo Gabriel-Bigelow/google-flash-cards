@@ -1,16 +1,26 @@
 import { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+  useLocation,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Google, initializeGoogle, showLoginOptions } from '../util/Google';
-import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser, updateDoc } from '../util/googleSlice';
+import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser } from '../util/googleSlice';
 
 import './App.css';
 import '../util/google.css'
-
-let savedData;
+import { Topics } from '../Components/Topics/Topics';
+import { addTopic, selectTopics } from '../Components/Topics/topicsSlice';
+import { Topic } from '../Components/Topics/Topic';
+import { NewTopicForm } from '../Components/Forms/NewTopicForm';
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const topics = useSelector(selectTopics);
   const savedData = useSelector(selectSavedData);
   const searchedForDocument = useSelector(selectSearchedForDocument);
 
@@ -77,20 +87,49 @@ function App() {
     dispatch(deleteFromDoc({id, revision, startIndex, endIndex}))
   }
 
-
+  /*function addTopicFunc () {
+    dispatch(addTopic({ id: '123', name: 'topicName'} ))
+  }*/ 
   return (
-    <div className="App">
-      <nav className="App-header">
+    <Router>
+      <nav className="app-header">
+        <NavLink to="/topics/all">Topics</NavLink>
+        <NavLink to="/quizzes">Quizzes</NavLink>
         {showLoginOptions(user)}
       </nav>
+      <div id="app-body">
+      <Routes>
+        <Route path="/topics">
+          <Route path="all" element={<Topics topics={topics} />} />
+          <Route path="newTopic" element={<NewTopicForm/>} />
+          <Route path=":topicId" element={<Topic topics={topics} showTopicActions={true} />} />
+        </Route>
+        
+      </Routes>
+        <button onClick={Google.getDocument}>get documents</button>
+        <button onClick={deleteFunction}>Delete Document</button>
+        <button onClick={testFunction}>insert into Document</button>
+        <button onClick={deleteSomeFromDoc}>delete some from Document</button>
+        <button onClick={deleteAllFromDoc}>delete all from Document</button>
+      </div>
       
-      <button onClick={Google.getDocument}>get documents</button>
-      <button onClick={deleteFunction}>Delete Document</button>
-      <button onClick={testFunction}>insert into Document</button>
-      <button onClick={deleteSomeFromDoc}>delete some from Document</button>
-      <button onClick={deleteAllFromDoc}>delete all from Document</button>
-    </div>
+    </Router>
   );
+}
+
+function TopicsPaths () {
+  const { pathname } = useLocation();
+
+  return (
+    <>
+      <Topics /> 
+
+      <Routes>
+        <Route path=":topicid" element={<Topic />} />
+      </Routes>
+    </>
+  )
+
 }
 
 export default App;
