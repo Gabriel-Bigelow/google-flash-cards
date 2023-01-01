@@ -21,8 +21,10 @@ export function NewQuizForm ({topics}) {
 
     let flashCards = [];
 
+    //used to give the HTML elements different IDs to be able to delete them
     let flashCardId = 0;
 
+    //temporary data holder for flash card that is currently being edited.
     let flashCard = {
         id: flashCardId,
         front: null,
