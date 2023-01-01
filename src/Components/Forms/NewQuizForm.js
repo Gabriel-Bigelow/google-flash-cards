@@ -29,14 +29,14 @@ export function NewQuizForm ({topics}) {
         back: null
     }
 
+    //function to assign random id to quiz
     function randomId () {
         return Math.floor(Math.random() * 1000 * 1000 * 1000 * 1000)
     }
 
-
+    //dispatches the addQuiz action, which attaches the flash cards to the quiz and the quiz to a specified top, if there is one.
     function handleSubmit (event) {
         event.preventDefault();
-
 
         const flashCardsArray = flashCards.map(card => {
             return {
@@ -53,14 +53,14 @@ export function NewQuizForm ({topics}) {
         navigate('/quizzes/all')
     }
     
+    //populates the drop-down list to pick a topic and attach it to the quiz.
     function populateTopicsList () {
-        console.log(topics);
         return Object.keys(topics).map(topic => {
-            console.log(topics[topic]);
             return <option value={topics[topic].id}>{topics[topic].name}</option>
         })
     }
 
+    //removes the card's representational HTML element, as well as the data object from the flashCards array. 
     function deleteCard (event) {
         event.preventDefault();
         const cardToDelete = document.getElementById(event.target.parentNode.id);
@@ -69,6 +69,7 @@ export function NewQuizForm ({topics}) {
         flashCards.splice(flashCards.findIndex(card => card.id === parseInt(cardToDelete.id) ), 1);
     }
 
+    //adds a card to the flashCards array as well as a representational HTML element, along with the ability to remove that card.
     function addCard (event) {
         event.preventDefault();
 
@@ -141,13 +142,7 @@ export function NewQuizForm ({topics}) {
 
             <input className="submit-button" type="submit" value="Create Quiz" onClick={handleSubmit}/>
             
-            <div id="submitted-flash-cards">
-
-            </div>
-
-            
-
-
+            <div id="submitted-flash-cards" />
 
         </form>
     )
