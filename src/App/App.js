@@ -16,11 +16,15 @@ import { Topics } from '../Components/Topics/Topics';
 import { addTopic, selectTopics } from '../Components/Topics/topicsSlice';
 import { Topic } from '../Components/Topics/Topic';
 import { NewTopicForm } from '../Components/Forms/NewTopicForm';
+import { Quizzes } from '../Components/Quizzes/Quizzes';
+import { selectQuizzes } from '../Components/Quizzes/quizzesSlice';
+import { NewQuizForm } from '../Components/Forms/NewQuizForm';
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const topics = useSelector(selectTopics);
+  const quizzes = useSelector(selectQuizzes);
   const savedData = useSelector(selectSavedData);
   const searchedForDocument = useSelector(selectSearchedForDocument);
 
@@ -94,11 +98,16 @@ function App() {
     <Router>
       <nav className="app-header">
         <NavLink to="/topics/all">Topics</NavLink>
-        <NavLink to="/quizzes">Quizzes</NavLink>
+        <NavLink to="/quizzes/all">Quizzes</NavLink>
         {showLoginOptions(user)}
       </nav>
       <div id="app-body">
       <Routes>
+        <Route path="/quizzes" >
+          <Route path="all" element={<Quizzes quizzes={quizzes} />} />
+          <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
+          <Route path=":quizId" />
+        </Route>
         <Route path="/topics">
           <Route path="all" element={<Topics topics={topics} />} />
           <Route path="newTopic" element={<NewTopicForm/>} />

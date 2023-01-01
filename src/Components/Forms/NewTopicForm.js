@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { addTopic, selectTopics } from "../Topics/topicsSlice"
+import { addTopic} from "../Topics/topicsSlice"
 
 import './forms.css';
 
@@ -10,7 +10,6 @@ import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
 export function NewTopicForm () {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const topics = useSelector(selectTopics);
 
     const topicNameRef = useRef();
     const topicImageRef = useRef();
@@ -37,7 +36,7 @@ export function NewTopicForm () {
     }
 
     return (
-        <form id="new-topic-form" onSubmit={handleSubmit}>
+        <form className="new-form" onSubmit={handleSubmit}>
             <label>Topic Name 
                 <input type="text" placeholder="Topic Name" ref={topicNameRef} required />
             </label>

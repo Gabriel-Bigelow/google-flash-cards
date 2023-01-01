@@ -1,4 +1,4 @@
-#topics-header {
+#topics-header, #quizzes-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
