@@ -19,6 +19,7 @@ import { NewTopicForm } from '../Components/Forms/NewTopicForm';
 import { Quizzes } from '../Components/Quizzes/Quizzes';
 import { selectQuizzes } from '../Components/Quizzes/quizzesSlice';
 import { NewQuizForm } from '../Components/Forms/NewQuizForm';
+import { Quiz } from '../Components/Quizzes/Quiz';
 
 function App() {
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ function App() {
         <Route path="/quizzes" >
           <Route path="all" element={<Quizzes quizzes={quizzes} />} />
           <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
-          <Route path=":quizId" />
+          <Route path=":quizId" element={<Quiz quizzes={quizzes} />} />
         </Route>
         <Route path="/topics">
           <Route path="all" element={<Topics topics={topics} />} />

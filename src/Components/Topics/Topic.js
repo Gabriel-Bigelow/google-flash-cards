@@ -1,8 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router"
 import './topics.css';
 
-import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.jpg';
-import { useEffect } from "react";
 import { removeTopic } from "./topicsSlice";
 import { useDispatch } from "react-redux";
 
@@ -58,8 +56,5 @@ export function Topic ({topicData, topics, showTopicActions}) {
             </div>
             {topicActions()}
         </div>
-
-
-        
     )
 }

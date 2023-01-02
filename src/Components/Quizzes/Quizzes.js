@@ -1,8 +1,10 @@
 import { NavLink, Outlet } from "react-router-dom"
+import { Quiz } from "./Quiz"
+
+import './quizzes.css';
 
 
 export function Quizzes ({quizzes}) {
-
 
 
 
@@ -16,7 +18,8 @@ export function Quizzes ({quizzes}) {
             <div id="quizzes-body-container">
                 {Object.keys(quizzes).map(quiz => {
                     console.log(quizzes[quiz])
-                    //return <Topic topicData={topics[topic]} />
+                    console.log(quizzes[quiz].id)
+                    return <NavLink to={`/quizzes/${quizzes[quiz].id}`} className="topic-quiz-link"><Quiz quizData={quizzes[quiz]} /> </NavLink>
                 })}
             </div>
 

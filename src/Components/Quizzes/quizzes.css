@@ -1,15 +1,15 @@
-#topics-header {
+#quizzes-header, #quiz-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 }
 
-#topics-header h2 {
+#quizzes-header h2 {
     display: inline-block;
 }
 
-#topics-body-container {
+#quizzes-body-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -17,13 +17,13 @@
 }
 
 
-#topic-and-actions {
+#quiz-and-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 5rem;
 }
-.topic-container {
+.quiz-container {
     display: grid;
     justify-items: center;
     background-color: rgba(255, 255, 255);
@@ -33,12 +33,12 @@
     transition-duration: 0.3s;
     border-radius: 1rem;
 }
-.topic-container:hover {
+.quiz-container:hover {
     cursor:pointer;
     width: 15rem;
     height: 15rem;
 }
-.topic-container h3 {
+.quiz-container h3 {
     display: grid;
     align-content: center;
     width: 100%;
@@ -55,7 +55,7 @@
     border-radius: 1rem 1rem 0 0;
 }
 
-.topic-image-container {
+.quiz-image-container {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -64,24 +64,59 @@
     border-radius: 1rem;
 }
 
-.topic-image {
+.quiz-image {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
 
-#topic-actions {
+#quiz-actions {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     gap: 1rem;
 }
 
-.topic-action {
+.quiz-action {
     padding: 0.5rem;
     border-radius: 0.5rem;
 }
 
-.topic-action:hover {
+.quiz-action:hover {
     background-color: rgb(180, 180, 180)
+}
+
+.flashcard {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    min-height: 10rem;
+    transform-style: preserve-3d;
+    transform: rotate3d(1, 0, 0, 0deg);
+    transition-duration: 0.8s;
+    transition-timing-function: ease-out;
+    margin: 2rem 0;
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    padding: 1rem;
+    text-align: center;
+    transition-duration: 2s;
+}
+
+.flashcard-front:hover, .flashcard-back:hover {
+    cursor:pointer;
+}
+
+.flashcard-front {
+    background-color:rgb(200, 255, 225);
+    transform: translateZ(1px);
+}
+
+.flashcard-back {
+    background-color: rgb(180, 255, 150);
+    transform: rotate3d(1, 0, 0, 180deg) translateZ(0px) ;
 }

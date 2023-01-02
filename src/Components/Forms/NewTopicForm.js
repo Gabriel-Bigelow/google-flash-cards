@@ -43,7 +43,7 @@ export function NewTopicForm () {
             <label>Topic Image URL
                 <input type="url" placeholder="Topic Image" ref={topicImageRef} />
             </label>
-            <input className="submit-button" type="submit" value="Add Topic"></input>
+            <input id="add" type="submit" value="Add Topic"></input>
         </form>
     )
 }

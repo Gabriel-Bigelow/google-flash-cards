@@ -9,11 +9,12 @@ const quizzesSlice = createSlice({
     reducers: {
         addQuiz: (state, action) => {
             console.log(action.payload);
-            const { id, name, topicId, cards} = action.payload;
+            const { id, name, topicId, image, cards} = action.payload;
             state.quizzes[id] = {
                 id: id,
                 name: name,
                 topicId: topicId,
+                image: image,
                 cards: cards
             }
         }

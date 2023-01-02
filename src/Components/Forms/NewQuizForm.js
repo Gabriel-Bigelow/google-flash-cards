@@ -15,7 +15,7 @@ export function NewQuizForm ({topics}) {
 
     const quizNameRef = useRef();
     const topicIdRef = useRef();
-
+    const quizImageRef = useRef();
     const cardFront = useRef();
     const cardBack = useRef();
 
@@ -40,19 +40,34 @@ export function NewQuizForm ({topics}) {
     function handleSubmit (event) {
         event.preventDefault();
 
+
+        let cardId = -1;
         const flashCardsArray = flashCards.map(card => {
+            cardId++;
             return {
+                id: cardId,
                 front: card.front,
                 back: card.back
             }
         })
 
-        dispatch(addQuiz({id: randomId(), name: quizNameRef.current.value, topicId: topicIdRef.current.value, cards: flashCardsArray}))
+        let quizImage;
 
-        quizNameRef.current.value = "";
-        topicIdRef.current.value = "";
+        if (!quizImageRef.current.value) {
+            quizImage = flashCardsDefaultImage;
+        } else {
+            quizImage = quizImageRef.current.value;
+        }
+        if (quizNameRef.current.value && flashCardsArray.length > 0) {
 
-        navigate('/quizzes/all')
+            dispatch(addQuiz({id: randomId(), name: quizNameRef.current.value, topicId: topicIdRef.current.value, image: quizImage, cards: flashCardsArray}))
+
+        //quizNameRef.current.value = "";
+        //topicIdRef.current.value = "";
+
+        
+            navigate('/quizzes/all')
+        }
     }
     
     //populates the drop-down list to pick a topic and attach it to the quiz.
@@ -104,9 +119,7 @@ export function NewQuizForm ({topics}) {
             cardContainer.appendChild(front);
             cardContainer.appendChild(back);
             cardContainer.appendChild(removeButton)
-            document.getElementById('submitted-flash-cards').appendChild(cardContainer);
-            
-            
+            document.getElementById('submitted-flash-cards').prepend(cardContainer);
             
             flashCardId++;
             flashCard = {
@@ -122,30 +135,37 @@ export function NewQuizForm ({topics}) {
     }
 
     return (
-        <form className="new-form" onSubmit={handleSubmit}>
-            <label for="quiz-name">Quiz Name
-                <input id="quiz-name" type="text" placeholder="name" ref={quizNameRef} required/>
-            </label>
+        <div>
+            <button id="submit" onClick={handleSubmit}>Add Quiz</button>
+            <div id="form-and-cards">
+                <form className="new-form" onSubmit={handleSubmit}>
+                    <label for="quiz-name">Quiz Name
+                        <input id="quiz-name" type="text" placeholder="name (required)" ref={quizNameRef} required/>
+                    </label>
 
-            <label for="topic-name">Topic
-                <select id="topic-names" ref={topicIdRef}>
-                    <option value="">None</option>
-                    {populateTopicsList()}
-                </select>
-            </label>
+                    <label for="topic-name">Topic
+                        <select id="topic-names" ref={topicIdRef}>
+                            <option value="">None</option>
+                            {populateTopicsList()}
+                        </select>
+                    </label>
 
-            <div className="card-input-container">
-                <h2>New Flash Card</h2>
-                <textarea className="card-input" placeholder="front" ref={cardFront} />
-                <textarea className="card-input" placeholder="back" ref={cardBack} />
+                    <label for="quiz-image">Quiz Name
+                        <input id="quiz-image" type="url" placeholder="Image URL" ref={quizImageRef} />
+                    </label>
+                    
+                    <div className="card-input-container">
+                        <h2>New Flash Card (1 or more required)</h2>
+                        <textarea className="card-input" placeholder="front (required)" ref={cardFront} />
+                        <textarea className="card-input" placeholder="back (required)" ref={cardBack} />
+                    </div>
+                    
+                    <button id="add" onClick={addCard}>Add Card</button>
+                </form>
+                <div id="submitted-flash-cards" >
+                    <h3>Added Flash Cards</h3>
+                </div>
             </div>
-            
-            <button className="submit-button" onClick={addCard}>Add Card</button>
-
-            <input className="submit-button" type="submit" value="Create Quiz" onClick={handleSubmit}/>
-            
-            <div id="submitted-flash-cards" />
-
-        </form>
+        </div>
     )
 }
