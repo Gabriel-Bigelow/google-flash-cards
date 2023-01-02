@@ -13,8 +13,10 @@ export function Quiz ({quizData, quizzes}) {
 
     if (quizData) {
         quiz = quizData;
-    } else {
+    } else if (quizzes[quizId]) {
         quiz = quizzes[quizId];
+    } else {
+        return navigate('/quizzes/all');
     }
 
     function selectQuizContainer () {
@@ -54,7 +56,7 @@ export function Quiz ({quizData, quizzes}) {
             <div className="quiz-container" id={quiz.id} onClick={selectQuizContainer}>
                 <h3>{quiz.name}</h3>
                 <div className="quiz-image-container">
-                    <img className="quiz-image" src={quiz.image} />
+                    <img className="quiz-image" src={quiz.image} alt="quiz preview pic" />
                 </div>
             </div>
             {quizActions()}

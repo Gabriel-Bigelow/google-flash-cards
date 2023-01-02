@@ -4,16 +4,15 @@ import {
   Routes,
   Route,
   NavLink,
-  useLocation,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Google, initializeGoogle, showLoginOptions } from '../util/Google';
+import { initializeGoogle, showLoginOptions } from '../util/Google';
 import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser } from '../util/googleSlice';
 
 import './App.css';
 import '../util/google.css'
 import { Topics } from '../Components/Topics/Topics';
-import { addTopic, selectTopics } from '../Components/Topics/topicsSlice';
+import { selectTopics } from '../Components/Topics/topicsSlice';
 import { Topic } from '../Components/Topics/Topic';
 import { NewTopicForm } from '../Components/Forms/NewTopicForm';
 import { Quizzes } from '../Components/Quizzes/Quizzes';
@@ -40,7 +39,7 @@ function App() {
     if (searchedForDocument === true && !savedData) {
       dispatch(createDoc());
     }
-  }, [user, savedData, searchedForDocument])
+  }, [user, topics, quizzes, savedData, searchedForDocument, dispatch])
 
   function deleteFunction () {
     let docId;
@@ -87,14 +86,10 @@ function App() {
 
     //let startIndex = savedData.body.content[1].paragraph.elements[0].textRun.match('');
     //let endIndex = savedData.body.content[1].endIndex-1;
-
-
     dispatch(deleteFromDoc({id, revision, startIndex, endIndex}))
   }
 
-  /*function addTopicFunc () {
-    dispatch(addTopic({ id: '123', name: 'topicName'} ))
-  }*/ 
+
   return (
     <Router>
       <nav className="app-header">
@@ -116,7 +111,6 @@ function App() {
         </Route>
         
       </Routes>
-        <button onClick={Google.getDocument}>get documents</button>
         <button onClick={deleteFunction}>Delete Document</button>
         <button onClick={testFunction}>insert into Document</button>
         <button onClick={deleteSomeFromDoc}>delete some from Document</button>
@@ -125,21 +119,6 @@ function App() {
       
     </Router>
   );
-}
-
-function TopicsPaths () {
-  const { pathname } = useLocation();
-
-  return (
-    <>
-      <Topics /> 
-
-      <Routes>
-        <Route path=":topicid" element={<Topic />} />
-      </Routes>
-    </>
-  )
-
 }
 
 export default App;

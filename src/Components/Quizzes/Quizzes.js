@@ -17,9 +17,7 @@ export function Quizzes ({quizzes}) {
             
             <div id="quizzes-body-container">
                 {Object.keys(quizzes).map(quiz => {
-                    console.log(quizzes[quiz])
-                    console.log(quizzes[quiz].id)
-                    return <NavLink to={`/quizzes/${quizzes[quiz].id}`} className="topic-quiz-link"><Quiz quizData={quizzes[quiz]} /> </NavLink>
+                    return <NavLink key={`quiz-${quizzes[quiz].id}`} id={`quiz-link-${quizzes[quiz].id}`} to={`/quizzes/${quizzes[quiz].id}`} className="topic-quiz-link"><Quiz key={`quiz-${quizzes[quiz].id}`} id={`quiz-${quizzes[quiz].id}`} quizData={quizzes[quiz]} /> </NavLink>
                 })}
             </div>
 

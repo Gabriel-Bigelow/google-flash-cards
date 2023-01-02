@@ -1,12 +1,10 @@
 import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { addTopic, selectTopics } from "../Topics/topicsSlice"
 
 import './forms.css';
 
 import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
-import { createDraftSafeSelector } from "@reduxjs/toolkit";
 import { addQuiz } from "../Quizzes/quizzesSlice";
 
 export function NewQuizForm ({topics}) {
@@ -135,22 +133,22 @@ export function NewQuizForm ({topics}) {
     }
 
     return (
-        <div>
+        <div id="new-quiz-container">
             <button id="submit" onClick={handleSubmit}>Add Quiz</button>
             <div id="form-and-cards">
                 <form className="new-form" onSubmit={handleSubmit}>
-                    <label for="quiz-name">Quiz Name
+                    <label>Quiz Name
                         <input id="quiz-name" type="text" placeholder="name (required)" ref={quizNameRef} required/>
                     </label>
 
-                    <label for="topic-name">Topic
+                    <label>Topic
                         <select id="topic-names" ref={topicIdRef}>
                             <option value="">None</option>
                             {populateTopicsList()}
                         </select>
                     </label>
 
-                    <label for="quiz-image">Quiz Name
+                    <label>Quiz Name
                         <input id="quiz-image" type="url" placeholder="Image URL" ref={quizImageRef} />
                     </label>
                     

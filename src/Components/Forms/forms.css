@@ -1,3 +1,7 @@
+#new-quiz-container {
+    display: grid;
+}
+
 #form-and-cards {
     display: flex;
     gap: 2rem;
