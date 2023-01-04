@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 import { addTopic} from "../Topics/topicsSlice"
 
 import './forms.css';
@@ -8,9 +8,19 @@ import './forms.css';
 import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
 import { setPushUpdate } from "../../util/googleSlice";
 
-export function NewTopicForm () {
+export function NewTopicForm ({topics}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const topicId = useParams();
+    let topic = {
+        name: undefined,
+        image: undefined
+    };
+
+    if (topicId.topicId) {
+        topic = topics[topicId.topicId];
+    }
+    console.log(topic);
 
     const topicNameRef = useRef();
     const topicImageRef = useRef();
@@ -23,29 +33,44 @@ export function NewTopicForm () {
     function handleSubmit (event) {
         event.preventDefault();
 
-        let topicName = topicNameRef.current.value;
-        let topicImage = topicImageRef.current.value;
+        if (topicNameRef.current.value) {
+            let topicName = topicNameRef.current.value;
+            let topicImage = topicImageRef.current.value;
+    
+            if (!topicImage) {
+                topicImage = flashCardsDefaultImage;
+            }
 
-        if (!topicImage) {
-            topicImage = flashCardsDefaultImage;
+
+            let newId;
+            if (topic.id) {
+                newId = topic.id;
+            } else {
+                newId = randomId();
+            }
+            console.log()
+
+            dispatch(addTopic({id: newId, name: topicName, image: topicImage }));
+            dispatch(setPushUpdate(true));
+            topicNameRef.current.value = "";
+            topicImageRef.current.value = "";
+            
+            navigate('/topics/all');
         }
-        
-        dispatch(addTopic({id: randomId(), name: topicName, image: topicImage }));
-        dispatch(setPushUpdate(true));
-        topicNameRef.current.value = "";
-        topicImageRef.current.value = "";
-        navigate('/topics/all');
     }
 
     return (
-        <form className="new-form" onSubmit={handleSubmit}>
-            <label>Topic Name 
-                <input type="text" placeholder="Topic Name" ref={topicNameRef} required />
-            </label>
-            <label>Topic Image URL
-                <input type="url" placeholder="Topic Image" ref={topicImageRef} />
-            </label>
-            <input id="add" type="submit" value="Add Topic"></input>
-        </form>
+        <div id="new-topic-container">
+            <form id="new-topic-form" className="new-form">
+                <label>Topic Name 
+                    <input type="text" placeholder="Topic Name" defaultValue={topic.name} ref={topicNameRef} required />
+                </label>
+                <label>Topic Image URL
+                    <input type="url" placeholder="Topic Image" defaultValue={topic.image} ref={topicImageRef} />
+                </label>
+                <button type="submit" onClick={handleSubmit}>Add Topic</button>
+                <Outlet/>
+            </form>
+        </div>
     )
 }

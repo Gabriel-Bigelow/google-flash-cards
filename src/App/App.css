@@ -63,6 +63,7 @@ button {
 
 button:hover {
     cursor: pointer;
+    background-color: #3089bd;
 }
 
 .app-header {

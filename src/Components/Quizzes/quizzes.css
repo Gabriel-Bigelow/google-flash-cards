@@ -18,11 +18,6 @@
     gap: 3rem;
 }
 
-#create-quiz-button {
-    color: white;
-    background-color: #2779a7;
-}
-
 .quiz-and-actions {
     min-height: 15rem;
     min-width: 15rem;

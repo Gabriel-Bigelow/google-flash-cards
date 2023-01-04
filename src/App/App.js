@@ -93,11 +93,13 @@ function App() {
           <Route path="/quizzes" >
             <Route path="all" element={<Quizzes quizzes={quizzes} />} />
             <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
+            <Route path="newQuiz/forTopic/:topicId" element={<NewQuizForm topics={topics} /> } />
             <Route path=":quizId" element={<Quiz quizzes={quizzes} />} />
           </Route>
           <Route path="/topics">
             <Route path="all" element={<Topics topics={topics} />} />
             <Route path="newTopic" element={<NewTopicForm/>} />
+            <Route path="newTopic/:topicId" element={<NewTopicForm topics={topics}/>}/>
             <Route path=":topicId" element={<Topic topics={topics} showTopicActions={true} />} />
           </Route>
           

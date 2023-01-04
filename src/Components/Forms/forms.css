@@ -1,5 +1,10 @@
-#new-quiz-container {
+#new-quiz-container, #new-topic-container {
     display: grid;
+}
+
+#new-topic-container {
+    width: 100%;
+    justify-content: center;
 }
 
 #form-and-cards {

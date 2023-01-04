@@ -10,13 +10,12 @@ export function Quizzes ({quizzes}) {
     function handleClick() {
         navigate('/quizzes/newQuiz');
     }
-//<NavLink className="black" to={`/quizzes/newQuiz`}>Create New Quiz</NavLink>
 
     return (
         <div>
             <div id="quizzes-header">
                 <h2>Quizzes</h2>
-                <button id="create-quiz-button" onClick={handleClick}>+</button>
+                <button id="create-quiz-button" onClick={handleClick}>Add Quiz</button>
             </div>
             
             <div id="quizzes-body-container">

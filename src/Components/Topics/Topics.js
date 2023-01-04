@@ -1,17 +1,24 @@
 import {
     Outlet,
     NavLink,
+    useNavigate,
   } from 'react-router-dom';
 import { Topic } from './Topic';
 
 
 export function Topics ({topics}) {
+    const navigate = useNavigate();
+
+    function handleClick () {
+        navigate('/topics/newTopic')
+    }
+
 
     return (
         <div>
             <div id="topics-header">
                 <h2>Topics</h2>
-                <NavLink to={`/topics/newTopic`}>Create New Topic</NavLink>
+                <button onClick={handleClick}>Add Topic</button>
             </div>
             
             <div id="topics-body-container">

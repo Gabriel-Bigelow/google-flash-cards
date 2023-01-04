@@ -1,16 +1,18 @@
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import './forms.css';
 
 import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
 import { addQuiz } from "../Quizzes/quizzesSlice";
 import { setPushUpdate } from "../../util/googleSlice";
+import { addQuizId } from "../Topics/topicsSlice";
 
 export function NewQuizForm ({topics}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const params = useParams();
 
     const quizNameRef = useRef();
     const topicIdRef = useRef();
@@ -57,8 +59,14 @@ export function NewQuizForm ({topics}) {
             quizImage = quizImageRef.current.value;
         }
 
+        let quizId = randomId();
+
         if (quizNameRef.current.value && flashCardsArray.length > 0) {
-            dispatch(addQuiz({id: randomId(), name: quizNameRef.current.value, topicId: topicIdRef.current.value, image: quizImage, cards: flashCardsArray}))
+            if (params.topicId) {
+                dispatch(addQuizId({topicId: params.topicId, quizId:quizId}))
+            }
+
+            dispatch(addQuiz({id: quizId, name: quizNameRef.current.value, topicId: topicIdRef.current.value, image: quizImage, cards: flashCardsArray}))
             dispatch(setPushUpdate(true));
             navigate('/quizzes/all')
         }
@@ -139,7 +147,7 @@ export function NewQuizForm ({topics}) {
 
                     <label>Topic
                         <select id="topic-names" ref={topicIdRef}>
-                            <option value="" >None</option>
+                            <option value={params.topicId ? params.topicId : "None"}>{topics[params.topicId].name}</option>
                             {populateTopicsList()}
                         </select>
                     </label>

@@ -5,8 +5,13 @@
     justify-content: space-between;
 }
 
-#topics-header h2 {
-    display: inline-block;
+#topics-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #2779a7;
+    margin-bottom: 2rem;
 }
 
 #topics-body-container {
@@ -18,12 +23,16 @@
 
 
 #topic-and-actions {
+    min-height: 15rem;
+    min-width: 15rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 5rem;
+    align-content: center;
+    gap: 3rem;
 }
 .topic-container {
+    position: relative;
     display: grid;
     justify-items: center;
     background-color: rgba(255, 255, 255);
@@ -39,20 +48,20 @@
     height: 15rem;
 }
 .topic-container h3 {
-    display: grid;
+    position: absolute;
+    bottom: 0;
     align-content: center;
-    width: 100%;
-    height: 3rem;
+    width: 96%;
     margin: 0;
-    padding: 0.5rem 0;
-    grid-row: 1;
-    grid-column: 1;
+    padding: 0.5rem 2.5%;
     z-index: 2;
     text-align: center;
     backdrop-filter: 6px;
     filter: drop-shadow(0 0.2rem 0.1rem rgb(0, 0, 0, 0.5));
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 1rem 1rem 0 0;
+    color: white;
+    background-color: rgb(39, 121, 167, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 1rem 1rem;
 }
 
 .topic-image-container {
@@ -80,8 +89,4 @@
 .topic-action {
     padding: 0.5rem;
     border-radius: 0.5rem;
-}
-
-.topic-action:hover {
-    background-color: rgb(180, 180, 180)
 }

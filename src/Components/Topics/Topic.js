@@ -16,14 +16,24 @@ export function Topic ({topicData, topics, showTopicActions}) {
 
     if (topicData) {
         topic = topicData;
-    } else {
+    } else if (topics[topicId]){
         topic = topics[topicId];
+    } else {
+        return navigate('/topics/all');
     }
 
     function selectTopicContainer () {
         if (pathname === '/topics/all') {
             navigate(`/topics/${topic.id}`)
         }
+    }
+
+    function addQuiz () {
+        navigate(`/quizzes/newQuiz/forTopic/${topicId}`)
+    }
+
+    function editTopic () {
+        navigate(`/topics/newTopic/${topicId}`);
     }
 
     function deleteTopic () {
@@ -38,8 +48,8 @@ export function Topic ({topicData, topics, showTopicActions}) {
         if (showTopicActions) {
             return (
                 <div id="topic-actions">
-                    <button className="topic-action">Add Quiz</button>
-                    <button className="topic-action">Change Name / Image</button>
+                    <button className="topic-action" onClick={addQuiz}>Add Quiz</button>
+                    <button className="topic-action" onClick={editTopic}>Change Name / Image</button>
                     <button className="topic-action" onClick={deleteTopic}>Delete Topic</button>
                 </div>
             )
@@ -47,14 +57,16 @@ export function Topic ({topicData, topics, showTopicActions}) {
     }
 
     return (
-        <div id="topic-and-actions">
-            <div className="topic-container" id={topic.id} onClick={selectTopicContainer}>
-                <h3>{topic.name}</h3>
-                <div className="topic-image-container">
-                    <img className="topic-image" src={topic.image} />
+        <div id={topic.id}>
+            <div id="topic-and-actions">
+                <div className="topic-container" id={topic.id} onClick={selectTopicContainer}>
+                    <h3>{topic.name}</h3>
+                    <div className="topic-image-container">
+                        <img className="topic-image" src={topic.image} />
+                    </div>
                 </div>
+                {topicActions()}
             </div>
-            {topicActions()}
         </div>
     )
 }
