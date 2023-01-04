@@ -21,7 +21,6 @@ const topicsSlice = createSlice({
             for (let topic of action.payload) {
                 state.topics[topic.id] = topic;
             }
-            //state.topics = 
         },
         addQuizId: (state, action) => {
             state.topics[action.payload.topicId].quizIds.push(action.payload.quizId);

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeGoogle, showLoginOptions } from '../util/Google';
-import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser } from '../util/googleSlice';
+import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser, selectReadyToUpdate, overwriteDoc, selectPushUpdate, selectDataParsed, parseDataFromGoogle, setDataParsed } from '../util/googleSlice';
 
 import './App.css';
 import '../util/google.css'
@@ -16,9 +16,10 @@ import { selectTopics } from '../Components/Topics/topicsSlice';
 import { Topic } from '../Components/Topics/Topic';
 import { NewTopicForm } from '../Components/Forms/NewTopicForm';
 import { Quizzes } from '../Components/Quizzes/Quizzes';
-import { selectQuizzes } from '../Components/Quizzes/quizzesSlice';
+import { parseQuizzesFromGoogle, selectQuizzes } from '../Components/Quizzes/quizzesSlice';
 import { NewQuizForm } from '../Components/Forms/NewQuizForm';
 import { Quiz } from '../Components/Quizzes/Quiz';
+import { parseFromGoogle, parseToGoogle } from '../util/parseSavedData';
 
 function App() {
   const dispatch = useDispatch();
@@ -27,66 +28,56 @@ function App() {
   const quizzes = useSelector(selectQuizzes);
   const savedData = useSelector(selectSavedData);
   const searchedForDocument = useSelector(selectSearchedForDocument);
+  const dataParsed = useSelector(selectDataParsed);
+  const pushUpdate = useSelector(selectPushUpdate);
+
+  //////// NEED TO FIND A WAY TO GET THE MOST RECENT VERSION OF THE DOC, DELETE IT, THEN REPLACE IT WITH THE NEW DATA WITHOUT GOING INTO AN INFINITE LOOP.
+  initializeGoogle();
 
 
   useEffect(() => {
-    initializeGoogle();
+    
+    //parseToGoogle(topics, quizzes);
+  
+    let id = savedData ? savedData.documentId : undefined;
+    let revision = savedData ? savedData.revisionId : undefined;
 
-    if (searchedForDocument === false) {
+
+    if (!searchedForDocument) {
       dispatch(findDoc());
     }
 
-    if (searchedForDocument === true && !savedData) {
+    if (searchedForDocument && !savedData) {
       dispatch(createDoc());
-    }
-  }, [user, topics, quizzes, savedData, searchedForDocument, dispatch])
-
-  function deleteFunction () {
-    let docId;
-    if (savedData.documentId) {
-      docId = savedData.documentId;
-    }
-    dispatch(deleteDoc(docId));
-  }
-
-  function testFunction () {
-    let id;
-    let revision;
-    if (savedData.documentId) {
-      id = savedData.documentId;
-    }
-    if (savedData.revisionId) {
-      revision = savedData.revisionId
+      dispatch(findDoc());
     }
 
-    dispatch(insertIntoDoc({id, revision, text:'Delete this: Test 123'}));
-  }
+    if (searchedForDocument && savedData && !dataParsed) {
+      dispatch(parseQuizzesFromGoogle(savedData));
+      dispatch(setDataParsed(true));
+    }
 
-  function deleteAllFromDoc () {
+    if (id && revision && pushUpdate) {
+      overwriteDocHelper(parseToGoogle(topics, quizzes));
+    }
+  }, [user, topics, quizzes, savedData, searchedForDocument, dataParsed, dispatch]);
+
+
+
+
+
+
+
+
+
+
+  function overwriteDocHelper (newData) {
     let id = savedData.documentId;
     let revision = savedData.revisionId;
     let startIndex = savedData.body.content[1].startIndex;
-    let endIndex = savedData.body.content[1].endIndex-1;
+    let endIndex = savedData.body.content[savedData.body.content.length-1].endIndex-1;
 
-    dispatch(deleteFromDoc({id, revision, startIndex, endIndex}))
-  }
-
-  function deleteSomeFromDoc () {
-    let id = savedData.documentId;
-    let revision = savedData.revisionId;
-
-    let textToRemove = 'this: test 12'
-    let docBody = savedData.body.content[1].paragraph.elements[0].textRun.content.toLowerCase();
-
-    textToRemove = textToRemove.toLowerCase();
-
-    const startIndex = docBody.match(textToRemove)['index'] + 1 ;
-    console.log(startIndex)
-    const endIndex = startIndex + textToRemove.length;
-
-    //let startIndex = savedData.body.content[1].paragraph.elements[0].textRun.match('');
-    //let endIndex = savedData.body.content[1].endIndex-1;
-    dispatch(deleteFromDoc({id, revision, startIndex, endIndex}))
+    dispatch(overwriteDoc({id, revision, startIndex, endIndex, newData}));
   }
 
 
@@ -98,23 +89,19 @@ function App() {
         {showLoginOptions(user)}
       </nav>
       <div id="app-body">
-      <Routes>
-        <Route path="/quizzes" >
-          <Route path="all" element={<Quizzes quizzes={quizzes} />} />
-          <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
-          <Route path=":quizId" element={<Quiz quizzes={quizzes} />} />
-        </Route>
-        <Route path="/topics">
-          <Route path="all" element={<Topics topics={topics} />} />
-          <Route path="newTopic" element={<NewTopicForm/>} />
-          <Route path=":topicId" element={<Topic topics={topics} showTopicActions={true} />} />
-        </Route>
-        
-      </Routes>
-        <button onClick={deleteFunction}>Delete Document</button>
-        <button onClick={testFunction}>insert into Document</button>
-        <button onClick={deleteSomeFromDoc}>delete some from Document</button>
-        <button onClick={deleteAllFromDoc}>delete all from Document</button>
+        <Routes>
+          <Route path="/quizzes" >
+            <Route path="all" element={<Quizzes quizzes={quizzes} />} />
+            <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
+            <Route path=":quizId" element={<Quiz quizzes={quizzes} />} />
+          </Route>
+          <Route path="/topics">
+            <Route path="all" element={<Topics topics={topics} />} />
+            <Route path="newTopic" element={<NewTopicForm/>} />
+            <Route path=":topicId" element={<Topic topics={topics} showTopicActions={true} />} />
+          </Route>
+          
+        </Routes>
       </div>
       
     </Router>

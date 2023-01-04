@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { parseFromGoogle } from "../../util/parseSavedData";
 
 
 const quizzesSlice = createSlice({
@@ -7,6 +8,15 @@ const quizzesSlice = createSlice({
         quizzes: {}
     },
     reducers: {
+        parseQuizzesFromGoogle: (state, action) => {
+            const parsedData = parseFromGoogle(action.payload.body.content);
+            console.log(parsedData);
+            //state.quizzes = parsedData.quizzes;
+            state.quizzes = parsedData.quizzes;
+
+            console.log(parsedData.quizzes);
+        },
+
         addQuiz: (state, action) => {
             const { id, name, topicId, image, cards} = action.payload;
             state.quizzes[id] = {
@@ -20,7 +30,7 @@ const quizzesSlice = createSlice({
     }
 });
 
-export const { addQuiz } = quizzesSlice.actions;
+export const { parseQuizzesFromGoogle, addQuiz } = quizzesSlice.actions;
 export const selectQuizzes = (state) => state.quizzes.quizzes;
 
 export default quizzesSlice.reducer;

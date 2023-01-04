@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { gapi } from "gapi-script";
+import { parseFromGoogle } from "./parseSavedData";
 
 export const createDoc = createAsyncThunk(
     'google/createDoc',
@@ -52,12 +53,7 @@ export const findDoc = createAsyncThunk(
         return null;
     }
 );
-/*export const overwriteAllDoc = createAsyncThunk(
-    'google/overwriteAllDoc',
-    async (params) => {
 
-    }
-)*/
 
 export const insertIntoDoc = createAsyncThunk(
     'google/insertIntoDoc',
@@ -96,13 +92,14 @@ export const insertIntoDoc = createAsyncThunk(
     }
 )
 
-export const deleteFromDoc = createAsyncThunk(
-    'google/deleteFromDoc',
+export const overwriteDoc = createAsyncThunk(
+    'google/overwriteDoc',
     async (params) => {
-        const { id, revision, startIndex, endIndex} = params;
+        const { id, revision, startIndex, endIndex, newData} = params;
         const accessToken = gapi.auth.getToken().access_token;
         const headers = {'Authorization': 'Bearer ' + accessToken}
 
+        //send a delete request to the document specified by the id variable, using the batchUpdate deleteContentRange parameter
         const response = await fetch(`https://docs.googleapis.com/v1/documents/${id}:batchUpdate`, {
             method: "POST",
             headers: headers,
@@ -123,11 +120,46 @@ export const deleteFromDoc = createAsyncThunk(
                 }
             })
         })
+        
+        //if delete request succeeds
+        console.log('about to do the delete request');
         console.log(response);
         if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log(await jsonResponse);
-            return await jsonResponse;
+            console.log('delete request succeeded')
+            //send an insert request with the new data
+            const insertResponse = await fetch(`https://docs.googleapis.com/v1/documents/${id}:batchUpdate`, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({
+                    "requests": [
+                        {
+                            "insertText": {
+                                "endOfSegmentLocation": {
+                                    "segmentId": ""
+                                },
+                                "text": newData
+                            }
+                        }
+                    ],
+                    "writeControl": {
+                    "targetRevisionId": revision
+                    }
+                })
+            });
+
+            //if the insert request succeeds
+            if (insertResponse.ok) {
+                //send a get request for the new version of the document at the specified ID
+                const newDataResponse = await fetch(`https://docs.googleapis.com/v1/documents/${id}`, {
+                    headers: headers
+                })
+                if (newDataResponse.ok) {
+                    const jsonNewDataResponse = await newDataResponse.json();
+
+                    //return new savedData
+                    return jsonNewDataResponse;
+                }
+            }
         }
     }
 );
@@ -157,8 +189,10 @@ const googleSlice = createSlice({
     initialState: {
         user: null,
         accessToken: null,
-        savedData: null,
+        savedData: { documentId: null, revisionId: null},
         searchedForDocument: false,
+        dataParsed: false,
+        pushUpdate: false,
     },
     reducers: {
         setUser: (state, action) => {
@@ -167,14 +201,15 @@ const googleSlice = createSlice({
         setAccessToken: (state, action) => {
             state.accessToken = action.payload;
         },
-        setSavedData: (state, action) => {
-            state.savedData = action.payload;
+        setDataParsed: (state, action) => {
+            state.dataParsed = action.payload;
         },
-        setSearchedForDocument: (state, action) => {
-            state.searchedForDocument = action.payload;
-        }
+        setPushUpdate: (state, action) => {
+            state.pushUpdate = action.payload;
+        },
     },
     extraReducers: {
+        //FIND FLASH CARDS SAVED DATA DOC
         [findDoc.fulfilled]: (state, action) => {
             state.savedData = action.payload;
             state.searchedForDocument = true;
@@ -182,6 +217,8 @@ const googleSlice = createSlice({
         [createDoc.fulfilled]: (state, action) => {
             state.savedData = action.payload;
         },
+
+        //INSERT TEXT INTO FLASH CARDS SAVED DATA DOC
         [insertIntoDoc.rejected]: (state, action) => {
             console.log('rejected');
             console.log(action.payload);
@@ -190,6 +227,19 @@ const googleSlice = createSlice({
             console.log('fulfilled');
             console.log(action.payload);
         },
+
+        //OVERWRITE DATA IN GOOGLE DOCS
+        [overwriteDoc.rejected]: (state, action) => {
+            console.log('rejected');
+            console.log(action.payload);
+        },
+        [overwriteDoc.fulfilled]: (state, action) => {
+            console.log(action.payload);
+            state.savedData = action.payload;
+            state.pushUpdate = false;
+        },
+
+        //DELETE DATA DOCUMENT FILE
         [deleteDoc.rejected]: (state, action) => {
             console.log(action.payload);
         },
@@ -199,10 +249,12 @@ const googleSlice = createSlice({
     }
 })
 
-export const { setUser, setAccessToken, setSavedData, searchedForDocument } = googleSlice.actions;
+export const { setUser, setAccessToken, setDataParsed, setPushUpdate } = googleSlice.actions;
 export const selectUser = (state) => state.google.user;
 export const selectAccessToken = (state) => state.google.accessToken;
 export const selectSavedData = (state) => state.google.savedData;
 export const selectSearchedForDocument = (state) => state.google.searchedForDocument;
+export const selectDataParsed = (state) => state.google.dataParsed;
+export const selectPushUpdate = (state) => state.google.pushUpdate;
 
 export default googleSlice.reducer;

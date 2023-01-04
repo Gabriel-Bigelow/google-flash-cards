@@ -12,7 +12,7 @@ export function Quizzes ({quizzes}) {
         <div>
             <div id="quizzes-header">
                 <h2>Quizzes</h2>
-                <NavLink to={`/quizzes/newQuiz`}>Create New Quiz</NavLink>
+                <NavLink className="black" to={`/quizzes/newQuiz`}>Create New Quiz</NavLink>
             </div>
             
             <div id="quizzes-body-container">

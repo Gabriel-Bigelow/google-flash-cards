@@ -6,6 +6,7 @@ import './forms.css';
 
 import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
 import { addQuiz } from "../Quizzes/quizzesSlice";
+import { setPushUpdate } from "../../util/googleSlice";
 
 export function NewQuizForm ({topics}) {
     const dispatch = useDispatch();
@@ -50,20 +51,15 @@ export function NewQuizForm ({topics}) {
         })
 
         let quizImage;
-
         if (!quizImageRef.current.value) {
             quizImage = flashCardsDefaultImage;
         } else {
             quizImage = quizImageRef.current.value;
         }
+
         if (quizNameRef.current.value && flashCardsArray.length > 0) {
-
             dispatch(addQuiz({id: randomId(), name: quizNameRef.current.value, topicId: topicIdRef.current.value, image: quizImage, cards: flashCardsArray}))
-
-        //quizNameRef.current.value = "";
-        //topicIdRef.current.value = "";
-
-        
+            dispatch(setPushUpdate(true));
             navigate('/quizzes/all')
         }
     }
@@ -143,7 +139,7 @@ export function NewQuizForm ({topics}) {
 
                     <label>Topic
                         <select id="topic-names" ref={topicIdRef}>
-                            <option value="">None</option>
+                            <option value="" >None</option>
                             {populateTopicsList()}
                         </select>
                     </label>

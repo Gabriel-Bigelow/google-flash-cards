@@ -6,6 +6,7 @@ import { addTopic} from "../Topics/topicsSlice"
 import './forms.css';
 
 import flashCardsDefaultImage from '../../images/flashCardsDefaultImage.png';
+import { setPushUpdate } from "../../util/googleSlice";
 
 export function NewTopicForm () {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export function NewTopicForm () {
         }
         
         dispatch(addTopic({id: randomId(), name: topicName, image: topicImage }));
+        dispatch(setPushUpdate(true));
         topicNameRef.current.value = "";
         topicImageRef.current.value = "";
         navigate('/topics/all');

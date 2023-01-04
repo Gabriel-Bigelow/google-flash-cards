@@ -26,7 +26,19 @@ export function Quiz ({quizData, quizzes}) {
     }
 
     function quizActions () {
+        if (quizzes) {
+            return (
+                <div className="quiz-actions-container">
+                    <div className="action-container">
+                        <button className="action-button">Edit Quiz</button>
+                    </div>
 
+                    <div className="action-container">
+                        <button className="action-button">Delete Quiz</button>
+                    </div>
+                </div>
+            )
+        }
     }
 
     function displayCards() {
@@ -52,14 +64,18 @@ export function Quiz ({quizData, quizzes}) {
 
 
     return (
-        <div className="quiz-and-actions">
-            <div className="quiz-container" id={quiz.id} onClick={selectQuizContainer}>
-                <h3>{quiz.name}</h3>
-                <div className="quiz-image-container">
-                    <img className="quiz-image" src={quiz.image} alt="quiz preview pic" />
+        <div id={quiz.documentId}>
+            <div className="quiz-and-actions">
+                <div className="quiz-container" id={quiz.id} onClick={selectQuizContainer}>
+                    <h3>{quiz.name}</h3>
+                    <div className="quiz-image-container">
+                        <img className="quiz-image" src={quiz.image} alt="quiz preview pic" />
+                    </div>
                 </div>
+                {quizActions()}
+
             </div>
-            {quizActions()}
+            
             {displayCards()}
         </div>
     )
