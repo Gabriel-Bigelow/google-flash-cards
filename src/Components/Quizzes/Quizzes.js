@@ -1,18 +1,22 @@
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { Quiz } from "./Quiz"
 
 import './quizzes.css';
 
 
 export function Quizzes ({quizzes}) {
+    const navigate = useNavigate();
 
-
+    function handleClick() {
+        navigate('/quizzes/newQuiz');
+    }
+//<NavLink className="black" to={`/quizzes/newQuiz`}>Create New Quiz</NavLink>
 
     return (
         <div>
             <div id="quizzes-header">
                 <h2>Quizzes</h2>
-                <NavLink className="black" to={`/quizzes/newQuiz`}>Create New Quiz</NavLink>
+                <button id="create-quiz-button" onClick={handleClick}>+</button>
             </div>
             
             <div id="quizzes-body-container">

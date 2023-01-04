@@ -1,8 +1,10 @@
-#quizzes-header, #quiz-header {
+#quizzes-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 2px solid #2779a7;
+    margin-bottom: 2rem;
 }
 
 #quizzes-header h2 {
@@ -13,11 +15,17 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 1rem;
+    gap: 3rem;
 }
 
+#create-quiz-button {
+    color: white;
+    background-color: #2779a7;
+}
 
 .quiz-and-actions {
+    min-height: 15rem;
+    min-width: 15rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -60,6 +68,7 @@
 .quiz-container {
     display: grid;
     justify-items: center;
+    align-self: center;
     background-color: rgba(255, 255, 255);
     width: 13rem;
     height: 13rem;
@@ -73,20 +82,20 @@
     height: 15rem;
 }
 .quiz-container h3 {
-    display: grid;
+    position: absolute;
+    bottom: 0;
     align-content: center;
-    width: 100%;
-    height: 3rem;
+    width: 95%;
     margin: 0;
-    padding: 0.5rem 0;
-    grid-row: 1;
-    grid-column: 1;
+    padding: 0.5rem 2.5%;
     z-index: 2;
     text-align: center;
     backdrop-filter: 6px;
     filter: drop-shadow(0 0.2rem 0.1rem rgb(0, 0, 0, 0.5));
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 1rem 1rem 0 0;
+    color: white;
+    background-color: rgb(39, 121, 167, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 1rem 1rem;
 }
 
 .quiz-image-container {
@@ -154,7 +163,7 @@
 
 .flashcard-back {
     color: white;
-    background-color: rgb(100, 141, 83);
+    background-color: rgb(45, 155, 100);
     transform: rotate3d(1, 0, 0, 180deg) translateZ(0px) ;
 }
 

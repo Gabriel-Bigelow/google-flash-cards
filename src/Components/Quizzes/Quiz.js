@@ -62,18 +62,16 @@ export function Quiz ({quizData, quizzes}) {
         card.style.transform === 'rotate3d(1, 0, 0, 0deg)' ? card.style.transform = 'rotate3d(1, 0, 0, 180deg)' : card.style.transform = 'rotate3d(1, 0, 0, 0deg)';
     }
 
-
     return (
-        <div id={quiz.documentId}>
+        <div id={quiz.id}>
             <div className="quiz-and-actions">
                 <div className="quiz-container" id={quiz.id} onClick={selectQuizContainer}>
-                    <h3>{quiz.name}</h3>
                     <div className="quiz-image-container">
                         <img className="quiz-image" src={quiz.image} alt="quiz preview pic" />
                     </div>
+                    <h3>{quiz.name}</h3>
                 </div>
                 {quizActions()}
-
             </div>
             
             {displayCards()}

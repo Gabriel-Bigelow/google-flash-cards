@@ -43,11 +43,26 @@
 body {
     font-family: 'Nunito Sans';
     margin: 0;
-    background-color: #fff8df;
+    background-color: #fffbee;
 }
+
+h2 {
+    color: #2779a7;
+}
+
 
 button {
     font-family: 'Nunito Sans';
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #2779a7;
+    color: white;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 .app-header {
@@ -61,6 +76,7 @@ button {
     background-color: #2779a7;
     width: 100%;
     max-height: 6rem;
+    z-index: 100;
 }
 .app-header a{
     margin: 1rem 0;
@@ -89,4 +105,13 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+
+.black {
+    color: black;
+}
+
+.red-bg {
+    background-color: #FF9398;
 }
