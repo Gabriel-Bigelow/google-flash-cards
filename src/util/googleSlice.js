@@ -32,8 +32,12 @@ export const findDoc = createAsyncThunk(
 
         if (response.ok) {
             const jsonResponse = await response.json();
+            console.log(jsonResponse)
             for (let item of jsonResponse.items) {
                 if (item.title.includes('Flash Cards app - Saved Data') && item.labels.trashed === false) {
+                    console.log('found it');
+                    console.log(item);
+                    
                     foundId = item.id;
                 }
             }
@@ -94,6 +98,7 @@ export const overwriteDoc = createAsyncThunk(
         const { id, revision, startIndex, endIndex, newData} = params;
         const accessToken = gapi.auth.getToken().access_token;
         const headers = {'Authorization': 'Bearer ' + accessToken}
+        console.log(params);
 
         //send a delete request to the document specified by the id variable, using the batchUpdate deleteContentRange parameter
         const response = await fetch(`https://docs.googleapis.com/v1/documents/${id}:batchUpdate`, {
