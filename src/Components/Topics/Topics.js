@@ -1,6 +1,5 @@
 import {
     Outlet,
-    NavLink,
     useNavigate,
   } from 'react-router-dom';
 import { Topic } from './Topic';
@@ -22,7 +21,7 @@ export function Topics ({topics}) {
             
             <div id="topics-body-container">
                 {Object.keys(topics).map(topic => {
-                    return <Topic topicData={topics[topic]} />
+                    return <Topic key={topic} topicData={topics[topic]} />
                 })}
             </div>
 

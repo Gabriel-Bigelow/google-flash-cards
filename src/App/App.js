@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeGoogle, showLoginOptions } from '../util/Google';
-import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSavedData, selectSearchedForDocument, selectUser, selectReadyToUpdate, overwriteDoc, selectPushUpdate, selectDataParsed, parseDataFromGoogle, setDataParsed } from '../util/googleSlice';
+import { createDoc, findDoc, selectSavedData, selectSearchedForDocument, selectUser, overwriteDoc, selectPushUpdate, selectDataParsed, setDataParsed } from '../util/googleSlice';
 
 import './App.css';
 import '../util/google.css'
@@ -19,7 +19,7 @@ import { Quizzes } from '../Components/Quizzes/Quizzes';
 import { parseQuizzesFromGoogle, selectQuizzes } from '../Components/Quizzes/quizzesSlice';
 import { NewQuizForm } from '../Components/Forms/NewQuizForm';
 import { Quiz } from '../Components/Quizzes/Quiz';
-import { parseFromGoogle, parseToGoogle } from '../util/parseSavedData';
+import { parseToGoogle } from '../util/parseSavedData';
 
 function App() {
   const dispatch = useDispatch();
@@ -30,17 +30,26 @@ function App() {
   const searchedForDocument = useSelector(selectSearchedForDocument);
   const dataParsed = useSelector(selectDataParsed);
   const pushUpdate = useSelector(selectPushUpdate);
+  
 
   //////// NEED TO FIND A WAY TO GET THE MOST RECENT VERSION OF THE DOC, DELETE IT, THEN REPLACE IT WITH THE NEW DATA WITHOUT GOING INTO AN INFINITE LOOP.
   initializeGoogle();
 
 
   useEffect(() => {
-    
     //parseToGoogle(topics, quizzes);
   
     let id = savedData ? savedData.documentId : undefined;
     let revision = savedData ? savedData.revisionId : undefined;
+
+    function overwriteDocHelper (newData) {
+      let id = savedData.documentId;
+      let revision = savedData.revisionId;
+      let startIndex = savedData.body.content[1].startIndex;
+      let endIndex = savedData.body.content[savedData.body.content.length-1].endIndex-1;
+  
+      dispatch(overwriteDoc({id, revision, startIndex, endIndex, newData}));
+    }
 
 
     if (!searchedForDocument) {
@@ -61,7 +70,7 @@ function App() {
     if (id && revision && pushUpdate) {
       overwriteDocHelper(parseToGoogle(topics, quizzes));
     }
-  }, [user, topics, quizzes, savedData, searchedForDocument, dataParsed, dispatch]);
+  }, [user, topics, quizzes, savedData, searchedForDocument, dataParsed, pushUpdate, dispatch]);
 
 
 
@@ -72,14 +81,7 @@ function App() {
 
 
 
-  function overwriteDocHelper (newData) {
-    let id = savedData.documentId;
-    let revision = savedData.revisionId;
-    let startIndex = savedData.body.content[1].startIndex;
-    let endIndex = savedData.body.content[savedData.body.content.length-1].endIndex-1;
 
-    dispatch(overwriteDoc({id, revision, startIndex, endIndex, newData}));
-  }
 
 
   return (

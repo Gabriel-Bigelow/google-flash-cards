@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { gapi } from "gapi-script";
-import { parseFromGoogle } from "./parseSavedData";
 
 export const createDoc = createAsyncThunk(
     'google/createDoc',
@@ -81,14 +80,11 @@ export const insertIntoDoc = createAsyncThunk(
                 }
             })
         })
-        console.log(response);
+
         if (response.ok) {
             const jsonResponse = await response.json();
-            console.log(await jsonResponse);
             return await jsonResponse;
         }
-
-        
     }
 )
 
@@ -122,10 +118,7 @@ export const overwriteDoc = createAsyncThunk(
         })
         
         //if delete request succeeds
-        console.log('about to do the delete request');
-        console.log(response);
         if (response.ok) {
-            console.log('delete request succeeded')
             //send an insert request with the new data
             const insertResponse = await fetch(`https://docs.googleapis.com/v1/documents/${id}:batchUpdate`, {
                 method: "POST",
@@ -168,7 +161,6 @@ export const overwriteDoc = createAsyncThunk(
 export const deleteDoc = createAsyncThunk(
     'google/deleteDoc',
     async (id) => {
-        console.log(id);
         const accessToken = gapi.auth.getToken().access_token;
         const headers = {'Authorization': 'Bearer ' + accessToken}
 
@@ -234,13 +226,13 @@ const googleSlice = createSlice({
             console.log(action.payload);
         },
         [overwriteDoc.fulfilled]: (state, action) => {
-            console.log(action.payload);
             state.savedData = action.payload;
             state.pushUpdate = false;
         },
 
         //DELETE DATA DOCUMENT FILE
         [deleteDoc.rejected]: (state, action) => {
+            console.log('rejected');
             console.log(action.payload);
         },
         [deleteDoc.fulfilled]: (state, action) => {

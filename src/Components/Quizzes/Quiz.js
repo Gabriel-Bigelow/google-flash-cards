@@ -63,7 +63,7 @@ export function Quiz ({quizData, quizzes}) {
     function displayCards() {
         if (quizzes) {
             return quiz.cards.map(card => (
-                <div className="flashcard" id={card.id}>
+                <div className="flashcard" id={card.id} key={card.id}>
                     <div className="flashcard-front" onClick={flipCard}>{card.front}</div>
                     <div className="flashcard-back" onClick={flipCard}>{card.back}</div>
                 </div>

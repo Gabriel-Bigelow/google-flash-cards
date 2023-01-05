@@ -20,7 +20,6 @@ export function NewTopicForm ({topics}) {
     if (topicId.topicId) {
         topic = topics[topicId.topicId];
     }
-    console.log(topic);
 
     const topicNameRef = useRef();
     const topicImageRef = useRef();
@@ -48,7 +47,6 @@ export function NewTopicForm ({topics}) {
             } else {
                 newId = randomId();
             }
-            console.log()
 
             dispatch(addTopic({id: newId, name: topicName, image: topicImage }));
             dispatch(setPushUpdate(true));

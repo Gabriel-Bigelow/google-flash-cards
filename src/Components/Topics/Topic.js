@@ -2,25 +2,18 @@ import { useLocation, useNavigate, useParams } from "react-router"
 import './topics.css';
 
 import { removeTopic } from "./topicsSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectQuizzes } from "../Quizzes/quizzesSlice";
+import { Quiz } from "../Quizzes/Quiz";
+import { NavLink } from "react-router-dom";
 
 export function Topic ({topicData, topics, showTopicActions}) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     let { topicId } = useParams();
     const { pathname } = useLocation();
-    
-    
-    let topic;
-
-    if (topicData) {
-        topic = topicData;
-    } else if (topics[topicId]){
-        topic = topics[topicId];
-    } else {
-        return navigate('/topics/all');
-    }
+    const topic = topicId ? topics[topicId] : topicData;
+    const quizzes = useSelector(selectQuizzes);
 
     function selectTopicContainer () {
         if (pathname === '/topics/all') {
@@ -58,17 +51,42 @@ export function Topic ({topicData, topics, showTopicActions}) {
         }
     }
 
+    function showQuizzes () {
+        if (pathname !== '/topics/all') {
+            return (
+                <>  
+                    <h2 id="topic-quizzes-header">Quizzes</h2>
+                    <div id="topic-quizzes">
+                        {topic.quizIds.map(quiz => {
+                            return (
+                                <NavLink key={`quiz-${quizzes[quiz].id}`} id={`quiz-link-${quizzes[quiz].id}`} to={`/quizzes/${quizzes[quiz].id}`} className="topic-quiz-link">
+                                    <Quiz key={`quiz-${quizzes[quiz].id}`} id={`quiz-${quizzes[quiz].id}`} quizData={quizzes[quiz]} />
+                                </NavLink>
+                            )
+                        })}
+
+                    </div>
+                </>
+            )
+
+
+        }
+    }
+
     return (
         <div id={topic.id}>
             <div id="topic-and-actions">
                 <div className="topic-container" id={topic.id} onClick={selectTopicContainer}>
                     <h3>{topic.name}</h3>
                     <div className="topic-image-container">
-                        <img className="topic-image" src={topic.image} />
+                        <img className="topic-image" alt="topic preview pic" src={topic.image} />
                     </div>
                 </div>
                 {topicActions()}
             </div>
+            
+            {showQuizzes()}
+
         </div>
     )
 }
