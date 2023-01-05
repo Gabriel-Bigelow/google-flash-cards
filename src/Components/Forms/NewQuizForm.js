@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 
@@ -20,7 +20,7 @@ export function NewQuizForm ({topics, quizzes}) {
     const cardFront = useRef();
     const cardBack = useRef();
 
-    let flashCards = [];
+    let flashCards = useMemo(() => [], []);
 
     //used to give the HTML elements different IDs to be able to delete them
     let flashCardId = 0;
@@ -49,7 +49,7 @@ export function NewQuizForm ({topics, quizzes}) {
                 flashCards.splice(flashCards.findIndex(card => card.id === parseInt(cardToDelete.id) ), 1);
             }
 
-            let existingFlashCardId = 0;
+
             function prependExistingCards (pid, pFront, pBack) {
                 let existingFlashCard = {
                     id: pid,
@@ -82,10 +82,10 @@ export function NewQuizForm ({topics, quizzes}) {
                 cardContainer.appendChild(removeButton)
                 document.getElementById('submitted-flash-cards').prepend(cardContainer);
                 
-                existingFlashCardId++;
+                flashCardId++;
             }
             for (let card of paramsQuiz.cards) {
-                prependExistingCards(existingFlashCardId, card.front, card.back);
+                prependExistingCards(card.id, card.front, card.back);
             }   
         }
 
@@ -98,7 +98,7 @@ export function NewQuizForm ({topics, quizzes}) {
             document.getElementById('topic-names').value = null;
         }
 
-    }, [paramsQuiz, params.topicId])
+    }, [paramsQuiz, params.topicId, flashCardId, flashCards])
 
 
     //function to assign random id to quiz

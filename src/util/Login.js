@@ -1,7 +1,7 @@
 import { GoogleLogin } from 'react-google-login';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { CLIENT_ID } from './Google';
-import { selectUser, setAccessToken, setUser } from './googleSlice';
+import { setAccessToken, setUser } from './googleSlice';
 
 export function Login () {
     const dispatch = useDispatch();
