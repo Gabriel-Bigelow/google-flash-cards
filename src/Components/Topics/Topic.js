@@ -25,6 +25,8 @@ export function Topic ({topicData, topics, showTopicActions}) {
     function selectTopicContainer () {
         if (pathname === '/topics/all') {
             navigate(`/topics/${topic.id}`)
+        } else {
+            editTopic();
         }
     }
 

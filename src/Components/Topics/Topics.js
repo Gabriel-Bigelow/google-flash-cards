@@ -13,7 +13,6 @@ export function Topics ({topics}) {
         navigate('/topics/newTopic')
     }
 
-
     return (
         <div>
             <div id="topics-header">

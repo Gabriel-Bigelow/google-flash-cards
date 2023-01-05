@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 
@@ -9,7 +9,7 @@ import { addQuiz } from "../Quizzes/quizzesSlice";
 import { setPushUpdate } from "../../util/googleSlice";
 import { addQuizId } from "../Topics/topicsSlice";
 
-export function NewQuizForm ({topics}) {
+export function NewQuizForm ({topics, quizzes}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
@@ -31,6 +31,62 @@ export function NewQuizForm ({topics}) {
         front: null,
         back: null
     }
+
+    //if params.quizId, is defined, an exisiting quiz is being edited, and will its properties to populate the input elements.
+    let paramsQuiz;
+
+    if (params.quizId) {
+        paramsQuiz = quizzes[params.quizId];
+    }
+
+    useEffect(() => {
+        if (paramsQuiz && flashCards.length < 1) {
+            function prependExistingCards (pid, pFront, pBack) {
+                flashCard = {
+                    id: flashCardId,
+                    front: pFront,
+                    back: pBack
+                }
+                flashCards.push(flashCard);
+            
+                const cardContainer = document.createElement('div');
+                const front = document.createElement('p');
+                const back = document.createElement('p');
+                const removeButton = document.createElement('button');
+            
+            
+                cardContainer.className = "flash-card-preview";
+                cardContainer.id = pid;
+            
+            
+                front.className = 'card-front';
+                front.innerHTML = "Front: " + flashCard.front;
+                back.className = 'card-back';
+                back.innerHTML = "Back: " + flashCard.back;
+            
+                removeButton.innerHTML = 'DELETE';
+                removeButton.className = 'remove-button';
+                removeButton.onclick = deleteCard;
+            
+                cardContainer.appendChild(front);
+                cardContainer.appendChild(back);
+                cardContainer.appendChild(removeButton)
+                document.getElementById('submitted-flash-cards').prepend(cardContainer);
+                
+                flashCardId++;
+                flashCard = {
+                    id: flashCardId,
+                    front: null,
+                    back: null
+                }
+            }
+            for (let card of paramsQuiz.cards) {
+                console.log('prepending card');
+                prependExistingCards(card.id, card.front, card.back);
+            }
+        }
+    }, [paramsQuiz])
+
 
     //function to assign random id to quiz
     function randomId () {
@@ -59,11 +115,12 @@ export function NewQuizForm ({topics}) {
             quizImage = quizImageRef.current.value;
         }
 
-        let quizId = randomId();
+        let quizId = paramsQuiz ? paramsQuiz.id : randomId();
 
         if (quizNameRef.current.value && flashCardsArray.length > 0) {
-            if (params.topicId) {
-                dispatch(addQuizId({topicId: params.topicId, quizId:quizId}))
+            // if the topicIdRef has a value, the quiz id should be added to the topic.
+            if (topicIdRef.current.value) {
+                dispatch(addQuizId({topicId: topicIdRef.current.value, quizId:quizId}))
             }
 
             dispatch(addQuiz({id: quizId, name: quizNameRef.current.value, topicId: topicIdRef.current.value, image: quizImage, cards: flashCardsArray}))
@@ -142,18 +199,19 @@ export function NewQuizForm ({topics}) {
             <div id="form-and-cards">
                 <form className="new-form" onSubmit={handleSubmit}>
                     <label>Quiz Name
-                        <input id="quiz-name" type="text" placeholder="name (required)" ref={quizNameRef} required/>
+                        <input id="quiz-name" type="text" placeholder="name (required)"defaultValue={paramsQuiz ? paramsQuiz.name : ""} ref={quizNameRef} required/>
                     </label>
 
                     <label>Topic
                         <select id="topic-names" ref={topicIdRef}>
-                            <option value={params.topicId ? params.topicId : "None"}>{topics[params.topicId].name}</option>
+                            {/* {<option value={params.topicId || params.quizId ? params.topicId : "None"}>{paramsQuiz.topicId ? topics[paramsQuiz.topicId].name : ""}</option>
+                            {paramsQuiz ? <option value=""></option> : ""}} */}
                             {populateTopicsList()}
                         </select>
                     </label>
 
                     <label>Quiz Name
-                        <input id="quiz-image" type="url" placeholder="Image URL" ref={quizImageRef} />
+                        <input id="quiz-image" type="url" placeholder="Image URL" defaultValue={paramsQuiz ? paramsQuiz.image : ""} ref={quizImageRef} />
                     </label>
                     
                     <div className="card-input-container">
@@ -171,3 +229,4 @@ export function NewQuizForm ({topics}) {
         </div>
     )
 }
+

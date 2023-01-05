@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { parseFromGoogle } from "../../util/parseSavedData";
 
 
 const topicsSlice = createSlice({
@@ -7,6 +8,10 @@ const topicsSlice = createSlice({
         topics: {}
     },
     reducers: {
+        parseTopicsFromGoogle: (state, action) => {
+            const parsedData = parseFromGoogle(action.payload.body.content);
+            state.topics = parsedData.topics;
+        },
         addTopic: (state, action) => {
             state.topics[action.payload.id] = {
                 id: action.payload.id,
@@ -23,12 +28,11 @@ const topicsSlice = createSlice({
             }
         },
         addQuizId: (state, action) => {
-            console.log(action.payload);
             state.topics[action.payload.topicId].quizIds.push(action.payload.quizId);
         }
     }
 })
 
-export const { addTopic, removeTopic, addQuizId } = topicsSlice.actions;
+export const { parseTopicsFromGoogle, addTopic, removeTopic, addQuizId } = topicsSlice.actions;
 export const selectTopics = (state) => state.topics.topics;
 export default topicsSlice.reducer;

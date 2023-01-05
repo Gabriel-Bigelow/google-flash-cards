@@ -1,7 +1,11 @@
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
+import { setPushUpdate } from "../../util/googleSlice";
+import { removeQuiz } from "./quizzesSlice";
 
 
 export function Quiz ({quizData, quizzes}) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const pathname = useLocation();
     
@@ -22,7 +26,22 @@ export function Quiz ({quizData, quizzes}) {
     function selectQuizContainer () {
         if (pathname === '/quizzes/all') {
             navigate(`/quizzes/${quiz.id}`)
+        } else {
+            editQuiz();
         }
+    }
+
+    function editQuiz () {
+        navigate(`/quizzes/newQuiz/${quiz.id}`);
+    }
+
+    function deleteQuiz () {
+        let lessQuizzes = Object.keys(quizzes).filter(quiz => quizzes[quiz] !== quizzes[quizId])
+        lessQuizzes = lessQuizzes.map(quizId => quizzes[quizId]);
+        
+        dispatch(removeQuiz(lessQuizzes));
+        dispatch(setPushUpdate(true));
+        navigate('/quizzes/all');
     }
 
     function quizActions () {
@@ -30,11 +49,11 @@ export function Quiz ({quizData, quizzes}) {
             return (
                 <div className="quiz-actions-container">
                     <div className="action-container">
-                        <button className="action-button">Edit Quiz</button>
+                        <button className="action-button" onClick={editQuiz}>Edit Quiz</button>
                     </div>
 
                     <div className="action-container">
-                        <button className="action-button">Delete Quiz</button>
+                        <button className="action-button" onClick={deleteQuiz}>Delete Quiz</button>
                     </div>
                 </div>
             )

@@ -12,7 +12,7 @@ import { createDoc, deleteFromDoc, deleteDoc, findDoc, insertIntoDoc, selectSave
 import './App.css';
 import '../util/google.css'
 import { Topics } from '../Components/Topics/Topics';
-import { selectTopics } from '../Components/Topics/topicsSlice';
+import { parseTopicsFromGoogle, selectTopics } from '../Components/Topics/topicsSlice';
 import { Topic } from '../Components/Topics/Topic';
 import { NewTopicForm } from '../Components/Forms/NewTopicForm';
 import { Quizzes } from '../Components/Quizzes/Quizzes';
@@ -53,6 +53,7 @@ function App() {
     }
 
     if (searchedForDocument && savedData && !dataParsed) {
+      dispatch(parseTopicsFromGoogle(savedData));
       dispatch(parseQuizzesFromGoogle(savedData));
       dispatch(setDataParsed(true));
     }
@@ -93,6 +94,7 @@ function App() {
           <Route path="/quizzes" >
             <Route path="all" element={<Quizzes quizzes={quizzes} />} />
             <Route path="newQuiz" element={<NewQuizForm topics={topics} /> } />
+            <Route path="newQuiz/:quizId" element={<NewQuizForm topics={topics} quizzes={quizzes} />} />
             <Route path="newQuiz/forTopic/:topicId" element={<NewQuizForm topics={topics} /> } />
             <Route path=":quizId" element={<Quiz quizzes={quizzes} />} />
           </Route>

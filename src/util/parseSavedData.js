@@ -2,22 +2,50 @@ import flashCardsDefaultImage from '../images/flashCardsDefaultImage.png';
 
 export function parseToGoogle (topics, quizzes) {
 
-
-    const quiz1 = Object.keys(quizzes);
-    // console.log(quiz1);
+    let topicsString = 'Topics\n';
+    topicsString = parseTopicsTo(topics, topicsString);
 
     let quizzesString = 'Quizzes\n';
-
-    //const startPropertyString = ''
-
     quizzesString = parseQuizzesTo(quizzes, quizzesString);
 
-    // console.log(quizzesString);
-
-    const savedDataString = `!~!~ START OF FLASHCARDS SAVED DATA DOCUMENT~!~!\n${quizzesString}\n!~!~ END OF FLASHCARDS SAVED DATA DOCUMENT~!~!`
+    const savedDataString = `!~!~ START OF FLASHCARDS SAVED DATA DOCUMENT~!~!\n\n${topicsString}${quizzesString}!~!~ END OF FLASHCARDS SAVED DATA DOCUMENT~!~!`
 
     return savedDataString;
 }
+
+function parseTopicsTo (topics, topicsString) {
+    for (let topic of Object.keys(topics)) {
+        
+        //add topics[topic].id to the string
+        topicsString += `id: ${topic}\n`;
+
+        //add topics[topic].name to the string
+        topicsString += `name: ${topics[topic].name}\n`;
+
+        if (topics[topic].image === flashCardsDefaultImage) {
+            topicsString += 'image: defaultImage\n';
+        } else {
+            topicsString += `image: ${topics[topic].image}\n`
+        }
+        
+        const quizIdsString = parseQuizIdsTo(topics[topic].quizIds);
+        topicsString += `quizIds: ${quizIdsString}\n`;
+
+        return topicsString;
+    }
+}
+
+function parseQuizIdsTo (quizIds) {
+    let quizIdString = ''
+
+    for (let quizId of quizIds) {
+        quizIdString += `${quizId}, `
+    }
+    quizIdString += '\n';
+
+    return quizIdString;
+}
+
 
 function parseQuizzesTo (quizzes, quizzesString) {
     //parse quiz objects to string;
@@ -38,20 +66,9 @@ function parseQuizzesTo (quizzes, quizzesString) {
         } else {
             quizzesString += `image: ${quizzes[quiz].image}\n`
         }
-        
-
-
 
         const cardsString = parseCardsTo(quizzes[quiz].cards, quiz);
-
-
-
-
-
-        //add quizzes[quiz].cards
         quizzesString += `cards: ${cardsString}`;
-
-        quizzesString += '\n';
     }
     return quizzesString;
 }
@@ -71,7 +88,7 @@ function parseCardsTo(cards, quizId) {
 
         cardsString += ',\n';
     }
-    cardsString += `closingArrayBracketForQuiz${quizId}\n`;
+    cardsString += `closingArrayBracketForQuiz${quizId}\n\n`;
 
     return cardsString;
 }
@@ -79,7 +96,7 @@ function parseCardsTo(cards, quizId) {
 
 
 
-
+const findQuizIds = /(?:\d+)/
 const findCardId = /{id:\s*\s(\d+)\s/
 const findCardFront = /\sfront:\s(.*)\sback/
 const findCardBack = /\sback:\s(.*)},/
@@ -89,8 +106,6 @@ function returnLineData(line, start) {
 }
 
 export function parseFromGoogle (data) {
-    //console.log(data);
-
     const topics = {};
     const quizzes = {};
 
@@ -102,7 +117,49 @@ export function parseFromGoogle (data) {
 
     for (let i = 1; i < data.length-1; i++) {
         const line = data[i].paragraph.elements[0].textRun.content;
-        //console.log(line);
+
+        if (line.slice(0, 6) === "Topics") {
+            currentSection = "Topics"
+        }
+
+        if (currentSection === "Topics") {
+
+            //create the topic object in the function's topics object, and add the id property to the specified topic
+            if (line.slice(0, 4) === "id: ") {
+                id = parseInt(returnLineData(line, 4));
+                topics[id] = {};
+                topics[id].id = id;
+            }
+
+            //add the name property to the specified topic
+            if (line.slice(0, 6) === "name: ") {
+                const name = returnLineData(line, 6);
+                topics[id].name = name;
+            }
+
+            //add the image property to the specified topic
+            if (line.slice(0, 7) === 'image: ') {
+                if (returnLineData(line, 7) === 'defaultImage') {
+                    topics[id].image = flashCardsDefaultImage;
+                } else {
+                    topics[id].image = returnLineData(line, 7);
+                }
+            }
+
+            //add the quizIds array to the specified topic
+            if (line.slice(0, 9) === "quizIds: ") {
+                topics[id].quizIds = [];
+                let lineArray = line;
+                while (lineArray.match(findQuizIds)) {
+                    topics[id].quizIds.push(parseInt(lineArray.match(findQuizIds)[0]));
+                    lineArray = lineArray.replace(findQuizIds, '');
+                }
+            }
+        }
+
+
+
+
 
         if (line.slice(0,7) === "Quizzes") {
             currentSection = "Quizzes";
@@ -113,7 +170,7 @@ export function parseFromGoogle (data) {
 
             //create the quiz object in the function's quizzes object, and add the id property to the specified quiz
             if (line.slice(0, 4) === 'id: ') {
-                id = returnLineData(line, 4);
+                id = parseInt(returnLineData(line, 4));
                 quizzes[id] = {};
                 quizzes[id].id = id;
             }
@@ -126,10 +183,11 @@ export function parseFromGoogle (data) {
 
             //add the name property for the specified quiz
             if (line.slice(0, 9) === 'topicId: ') {
-                const topicId = returnLineData(line, 7)
-                quizzes[id].topicId = topicId;
+                const topicId = returnLineData(line, 9)
                 if (topicId === ': ') {
                     quizzes[id].topicId = null;
+                } else {
+                    quizzes[id].topicId = parseInt(topicId);
                 }
             }
 
@@ -149,32 +207,21 @@ export function parseFromGoogle (data) {
 
             if (inputtingCards) {
                 const card = {};
-                   
                 card.id = parseInt(line.match(findCardId)[1]);
                 card.front = line.match(findCardFront)[1];
                 card.back = line.match(findCardBack)[1];
-                //console.log(card);
-
                 
                 quizzes[id].cards.push(card);  
             }
 
             if (line.slice(0, 7) === 'cards: ') {
-                //console.log('card here');
                 quizzes[id].cards = [];
                 inputtingCards = true;
             }
-
-
-
         }
-
-
     }
 
     const savedData = {topics: topics, quizzes: quizzes}
-
-
 
     return savedData;
 }
