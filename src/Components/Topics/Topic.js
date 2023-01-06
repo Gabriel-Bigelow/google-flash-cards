@@ -16,6 +16,10 @@ export function Topic ({topicData, topics, showTopicActions}) {
     const topic = topicId ? topics[topicId] : topicData;
     const quizzes = useSelector(selectQuizzes);
 
+    if (!topic) {
+        return navigate('/topics/all');
+    }
+
     function selectTopicContainer () {
         if (pathname === '/topics/all') {
             navigate(`/topics/${topic.id}`)

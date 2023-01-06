@@ -11,14 +11,14 @@ import { setPushUpdate } from "../../util/googleSlice";
 export function NewTopicForm ({topics}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const topicId = useParams();
+    const {topicId} = useParams();
     let topic = {
         name: undefined,
         image: undefined
     };
 
-    if (topicId.topicId) {
-        topic = topics[topicId.topicId];
+    if (topicId && topics[topicId]) {
+        topic = topics[topicId];
     }
 
     const topicNameRef = useRef();

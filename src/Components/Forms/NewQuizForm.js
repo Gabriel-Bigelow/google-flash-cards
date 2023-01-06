@@ -40,7 +40,7 @@ export function NewQuizForm ({topics, quizzes}) {
     }
 
     useEffect(() => {
-        if (paramsQuiz) {
+        if (paramsQuiz && flashCards.length < 1) {
             function deleteCard (event) {
                 event.preventDefault();
                 const cardToDelete = document.getElementById(event.target.parentNode.id);
