@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { setPushUpdate } from "../../util/googleSlice";
+import { removeQuizId } from "../Topics/topicsSlice";
 import { removeQuiz } from "./quizzesSlice";
 
 
@@ -9,17 +10,11 @@ export function Quiz ({quizData, quizzes}) {
     const navigate = useNavigate();
     const pathname = useLocation();
     
-
-
     let { quizId } = useParams();
 
     let quiz;
-
-    if (quizData) {
-        quiz = quizData;
-    } else if (quizzes[quizId]) {
-        quiz = quizzes[quizId];
-    } else {
+    quizId ? quiz = quizzes[quizId] : quiz = quizData;
+    if (!quiz) {
         return navigate('/quizzes/all');
     }
 
@@ -39,6 +34,7 @@ export function Quiz ({quizData, quizzes}) {
         let lessQuizzes = Object.keys(quizzes).filter(quiz => quizzes[quiz] !== quizzes[quizId])
         lessQuizzes = lessQuizzes.map(quizId => quizzes[quizId]);
         
+        dispatch(removeQuizId({topicId: 840075227383, removeId: quizId}));
         dispatch(removeQuiz(lessQuizzes));
         dispatch(setPushUpdate(true));
         navigate('/quizzes/all');

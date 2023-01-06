@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectQuizzes } from "../Quizzes/quizzesSlice";
 import { Quiz } from "../Quizzes/Quiz";
 import { NavLink } from "react-router-dom";
+import { setPushUpdate } from "../../util/googleSlice";
 
 export function Topic ({topicData, topics, showTopicActions}) {
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ export function Topic ({topicData, topics, showTopicActions}) {
         lessTopics = lessTopics.map(topicId => topics[topicId]);
 
         dispatch(removeTopic(lessTopics));
+        dispatch(setPushUpdate(true));
         navigate('/topics/all');
     }
 

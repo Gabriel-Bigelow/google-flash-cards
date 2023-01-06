@@ -13,11 +13,12 @@ const topicsSlice = createSlice({
             state.topics = parsedData.topics;
         },
         addTopic: (state, action) => {
+            const quizIds = state.topics[action.payload.id] ? state.topics[action.payload.id].quizIds : [];
             state.topics[action.payload.id] = {
                 id: action.payload.id,
                 name: action.payload.name,
                 image: action.payload.image,
-                quizIds: []
+                quizIds: quizIds
             }
         },
         removeTopic: (state, action) => {
@@ -29,10 +30,13 @@ const topicsSlice = createSlice({
         },
         addQuizId: (state, action) => {
             state.topics[action.payload.topicId].quizIds.push(action.payload.quizId);
+        },
+        removeQuizId: (state, action) => {
+            state.topics[action.payload.topicId].quizIds = state.topics[action.payload.topicId].quizIds.filter(topic => topic !== parseInt(action.payload.removeId));
         }
     }
 })
 
-export const { parseTopicsFromGoogle, addTopic, removeTopic, addQuizId } = topicsSlice.actions;
+export const { parseTopicsFromGoogle, addTopic, removeTopic, addQuizId, removeQuizId } = topicsSlice.actions;
 export const selectTopics = (state) => state.topics.topics;
 export default topicsSlice.reducer;

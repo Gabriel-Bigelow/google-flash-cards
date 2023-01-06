@@ -1,6 +1,7 @@
 import flashCardsDefaultImage from '../images/flashCardsDefaultImage.png';
 
 export function parseToGoogle (topics, quizzes) {
+    //console.log(topics);
 
     let topicsString = 'Topics\n';
     topicsString = parseTopicsTo(topics, topicsString);
@@ -9,6 +10,8 @@ export function parseToGoogle (topics, quizzes) {
     quizzesString = parseQuizzesTo(quizzes, quizzesString);
 
     const savedDataString = `!~!~ START OF FLASHCARDS SAVED DATA DOCUMENT~!~!\n\n${topicsString}${quizzesString}!~!~ END OF FLASHCARDS SAVED DATA DOCUMENT~!~!`
+
+    //console.log(topicsString);
 
     return savedDataString;
 }
@@ -30,9 +33,8 @@ function parseTopicsTo (topics, topicsString) {
         
         const quizIdsString = parseQuizIdsTo(topics[topic].quizIds);
         topicsString += `quizIds: ${quizIdsString}\n`;
-
-        return topicsString;
     }
+    return topicsString;
 }
 
 function parseQuizIdsTo (quizIds) {
