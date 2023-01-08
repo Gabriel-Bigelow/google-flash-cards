@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { GoogleLogout } from 'react-google-login';
 import { useDispatch, useSelector } from 'react-redux';
 import { CLIENT_ID } from './Google';
@@ -11,6 +12,10 @@ export function Logout () {
         dispatch(setUser(null));
         console.log("Successful logout");
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <ul id="logout">

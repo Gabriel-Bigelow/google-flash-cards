@@ -7,13 +7,45 @@ export const createDoc = createAsyncThunk(
         const accessToken = gapi.auth.getToken().access_token;
         const headers = { 'Authorization': 'Bearer ' + accessToken };
 
-        const response = await fetch(`https://docs.googleapis.com/v1/documents?title=Flash Cards app - Saved Data`, {
+        const response = await fetch(`https://docs.googleapis.com/v1/documents`, {
             method: "POST",
             headers: headers,
+            body: JSON.stringify({
+                "title": "Flash Cards app - Saved Data",
+            })
         })
+
         if (response.ok) {
             const jsonResponse = await response.json();
-            return await jsonResponse;
+            const defaultTextResponse = await fetch(`https://docs.googleapis.com/v1/documents/${jsonResponse.documentId}:batchUpdate`, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({
+                    "requests": [
+                        {
+                            "insertText": {
+                                "endOfSegmentLocation": {
+                                    "segmentId": ""
+                                },
+                                "text": "INSERT SAVED DATA HERE"
+                            }
+                        }
+                    ],
+                    "writeControl": {
+                        "targetRevisionId": jsonResponse.revisionId
+                    }
+                })
+            })
+
+            if (defaultTextResponse.ok) {
+                const foundResponse = await fetch(`https://docs.googleapis.com/v1/documents/${jsonResponse.documentId}`, {
+                    headers: headers
+                })
+                if (foundResponse.ok) {
+                    const jsonFoundResponse = await foundResponse.json();
+                    return jsonFoundResponse;
+                }
+            }
         }
     }
 )
@@ -32,12 +64,8 @@ export const findDoc = createAsyncThunk(
 
         if (response.ok) {
             const jsonResponse = await response.json();
-            console.log(jsonResponse)
             for (let item of jsonResponse.items) {
-                if (item.title.includes('Flash Cards app - Saved Data') && item.labels.trashed === false) {
-                    console.log('found it');
-                    console.log(item);
-                    
+                if (item.title.includes('Flash Cards app - Saved Data') && item.labels.trashed === false) {                    
                     foundId = item.id;
                 }
             }
@@ -98,7 +126,6 @@ export const overwriteDoc = createAsyncThunk(
         const { id, revision, startIndex, endIndex, newData} = params;
         const accessToken = gapi.auth.getToken().access_token;
         const headers = {'Authorization': 'Bearer ' + accessToken}
-        console.log(params);
 
         //send a delete request to the document specified by the id variable, using the batchUpdate deleteContentRange parameter
         const response = await fetch(`https://docs.googleapis.com/v1/documents/${id}:batchUpdate`, {

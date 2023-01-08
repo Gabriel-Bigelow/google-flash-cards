@@ -186,7 +186,7 @@ export function parseFromGoogle (data) {
             //add the name property for the specified quiz
             if (line.slice(0, 9) === 'topicId: ') {
                 const topicId = returnLineData(line, 9)
-                if (topicId === ': ') {
+                if (topicId === ': ' || 'NaN\n') {
                     quizzes[id].topicId = null;
                 } else {
                     quizzes[id].topicId = parseInt(topicId);

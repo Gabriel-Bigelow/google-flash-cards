@@ -132,7 +132,7 @@ export function NewQuizForm ({topics, quizzes}) {
 
         if (quizNameRef.current.value && flashCardsArray.length > 0) {
             // if the topicIdRef has a value, the quiz id should be added to the topic.
-            if (topicIdRef.current.value) {
+            if (topicIdRef.current.value && !topics[topicIdRef.current.value].quizIds.includes(quizId)) {
                 dispatch(addQuizId({topicId: topicIdRef.current.value, quizId:quizId}))
             }
 
