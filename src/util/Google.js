@@ -5,7 +5,7 @@ import { Logout } from './Logout';
 
 export const API_KEY = "AIzaSyDbb1j6_PRIBuZUdSnizs4jIW5s0zCA2P0";
 export const CLIENT_ID = "477381734667-hdng9an695ii0b8jt2jidbkampkr1vr8.apps.googleusercontent.com";
-const SCOPES = 'https://www.googleapis.com/auth/drive.file'; //'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
 export function initializeGoogle () {
     gapi.load('client:auth2', Google.start);

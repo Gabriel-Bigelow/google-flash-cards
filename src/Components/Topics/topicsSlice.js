@@ -32,7 +32,9 @@ const topicsSlice = createSlice({
             state.topics[action.payload.topicId].quizIds.push(action.payload.quizId);
         },
         removeQuizId: (state, action) => {
-            state.topics[action.payload.topicId].quizIds = state.topics[action.payload.topicId].quizIds.filter(topic => topic !== parseInt(action.payload.removeId));
+            if (state.topics[action.payload.topicId] !== undefined) {
+                state.topics[action.payload.topicId].quizIds = state.topics[action.payload.topicId].quizIds.filter(topic => topic !== parseInt(action.payload.removeId));
+            }
         }
     }
 })

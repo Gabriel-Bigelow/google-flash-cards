@@ -34,7 +34,7 @@ export function Quiz ({quizData, quizzes}) {
         let lessQuizzes = Object.keys(quizzes).filter(quiz => quizzes[quiz] !== quizzes[quizId])
         lessQuizzes = lessQuizzes.map(quizId => quizzes[quizId]);
         
-        dispatch(removeQuizId({topicId: 840075227383, removeId: quizId}));
+        dispatch(removeQuizId({topicId: quiz.topicId, removeId: quizId}));
         dispatch(removeQuiz(lessQuizzes));
         dispatch(setPushUpdate(true));
         navigate('/quizzes/all');
