@@ -13,7 +13,7 @@ Google Flash Cards is a study app that utilizes the Google API to access Google 
 
 ### Google Login
 
-* Users are able to log directly in to their Google accounts from Google Flash Cards, and save Flash Cards data to their Google Drive and access their Flash Cards app saved data from anywhere in the world with an internet connection.
+* Users are able to log directly in to their Google accounts from Google Flash Cards and save Flash Cards data to their Google Drive and access their Flash Cards app saved data from anywhere in the world with an internet connection.
 
 ### Topics
 

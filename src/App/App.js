@@ -32,12 +32,10 @@ function App() {
   const pushUpdate = useSelector(selectPushUpdate);
   
 
-  //////// NEED TO FIND A WAY TO GET THE MOST RECENT VERSION OF THE DOC, DELETE IT, THEN REPLACE IT WITH THE NEW DATA WITHOUT GOING INTO AN INFINITE LOOP.
   initializeGoogle();
 
 
   useEffect(() => {
-    //parseToGoogle(topics, quizzes);
   
     let id = savedData ? savedData.documentId : undefined;
     let revision = savedData ? savedData.revisionId : undefined;
